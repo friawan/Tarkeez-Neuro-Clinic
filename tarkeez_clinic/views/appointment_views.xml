@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_tarkeez_appointment_tree" model="ir.ui.view">
+        <field name="name">tarkeez.appointment.list</field>
+        <field name="model">tarkeez.appointment</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="patient_id"/>
+                <field name="practitioner_id"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="session_type"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_tarkeez_appointment_form" model="ir.ui.view">
+        <field name="name">tarkeez.appointment.form</field>
+        <field name="model">tarkeez.appointment</field>
+        <field name="arch" type="xml">
+            <form string="Appointment">
+                <header>
+                    <button name="action_arrived" type="object" string="Arrived" class="btn-primary" invisible="[('state','!=','scheduled')]"/>
+                    <button name="action_in_session" type="object" string="In Session" class="btn-primary" invisible="[('state','!=','arrived')]"/>
+                    <button name="action_done" type="object" string="Done" class="btn-primary" invisible="[('state','!=','in_session')]"/>
+                    <button name="action_no_show" type="object" string="No Show" invisible="[('state','!=','scheduled')]"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="[('state','in',['done','cancelled'])]"/>
+                    <field name="state" widget="statusbar" statusbar_visible="scheduled,arrived,in_session,done,no_show,cancelled"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="practitioner_id"/>
+                            <field name="session_type"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" placeholder="Notes for this appointment..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="view_tarkeez_appointment_kanban" model="ir.ui.view">
+        <field name="name">tarkeez.appointment.kanban</field>
+        <field name="model">tarkeez.appointment</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record">
+                            <div class="o_kanban_primary_left">
+                                <strong><field name="patient_id"/></strong>
+                            </div>
+                            <div class="o_kanban_primary_right">
+                                <field name="state" widget="badge"/>
+                            </div>
+                            <div class="o_kanban_details">
+                                <div>
+                                    <span class="text-muted">Practitioner: </span>
+                                    <field name="practitioner_id"/>
+                                </div>
+                                <div>
+                                    <span class="text-muted">Start: </span>
+                                    <field name="date_start"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Calendar View -->
+    <record id="view_tarkeez_appointment_calendar" model="ir.ui.view">
+        <field name="name">tarkeez.appointment.calendar</field>
+        <field name="model">tarkeez.appointment</field>
+        <field name="arch" type="xml">
+            <calendar string="Appointments" date_start="date_start" date_stop="date_end" color="practitioner_id">
+                <field name="patient_id"/>
+                <field name="practitioner_id"/>
+                <field name="session_type"/>
+            </calendar>
+        </field>
+    </record>
+
+</odoo>
