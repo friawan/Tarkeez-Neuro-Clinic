@@ -1,0 +1,890 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_nfb" model="ir.actions.report">
+        <field name="name">NFB Checklist</field>
+        <field name="model">res.patients</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="binding_model_id" ref="tarkeez_neuro_clinic.model_res_patients"/>
+        <field name="report_name">tarkeez_neuro_clinic.report_nfb_template</field>
+        <field name="report_file">tarkeez_neuro_clinic.report_nfb_template</field>
+        <field name="print_report_name">
+            (object.name and 'Symptom Checklist - %s' % object.name or 'Symptom Checklist')
+        </field>
+    </record>
+
+    <template id="report_nfb_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <style>
+                            /* Page settings */
+                            @page {
+                            size: A4;
+                            margin: 10mm;
+                            }
+
+                            /* Header and footer */
+                            .o_report_layout .header,
+                            .o_report_layout .o_header {
+                            padding: 4px 0 !important;
+                            margin-bottom: 6px !important;
+                            }
+                            .o_report_layout .footer,
+                            .o_report_layout .o_footer {
+                            padding: 4px 0 !important;
+                            margin-top: 6px !important;
+                            font-size: 12px;
+                            }
+
+                            /* Section title */
+                            .sc-title {
+                            font-size: 18px;
+                            font-weight: 700;
+                            margin: 0 0 6px 0;
+                            }
+
+                            /* Subtle text */
+                            .sc-subtle {
+                            color: #666;
+                            }
+
+                            /* Meta table */
+                            .sc-meta {
+                            width: 100%;
+                            margin: 6px 0;
+                            }
+                            .sc-meta td {
+                            padding: 2px 6px;
+                            font-size: 12px;
+                            }
+
+                            /* Symptom table */
+                            .sc-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 4px;
+                            }
+                            .sc-table th,
+                            .sc-table td {
+                            border: 1px solid #d9d9d9;
+                            padding: 5px 7px;
+                            font-size: 12px;
+                            vertical-align: top;
+                            }
+                            .sc-table th {
+                            background: #f5f5f5;
+                            }
+                            .sc-sec {
+                            background: #eef3fb;
+                            font-weight: 600;
+                            }
+
+                            /* Checkboxes */
+                            .box {
+                            display: inline-block;
+                            width: 12px;
+                            height: 12px;
+                            border: 1px solid #888;
+                            text-align: center;
+                            line-height: 12px;
+                            font-size: 12px;
+                            border-radius: 2px;
+                            }
+                            .yes { color: #0a6; }
+                            .no { color: #c33; }
+
+                            /* Muted text */
+                            .muted {
+                            color: #888;
+                            font-size: 12px;
+                            }
+
+                            /* Section row */
+                            .sc-section-row th {
+                            border-top: 2px solid #bcd;
+                            }
+                        </style>
+
+                        <table style="border-collapse: separate; border-spacing:0; border:1px solid #000;
+              border-radius:15px 50px 30px; background-color:#f5f5f5; display: table; margin: 10px auto;">
+                            <tr>
+                                <td style="font-weight: bold; font-size:20px; text-align: center; padding:15px 20px; color:#000;">
+                                    <t t-if="o.age_group == 'child'">
+                                        <span>Kids Symptom Checklist</span>
+                                        <span style="margin-left:8px;">قائمة أعراض الأطفال</span>
+                                    </t>
+                                    <t t-elif="o.age_group == 'adult'">
+                                        <span>Adults Symptom Checklist</span>
+                                        <span style="margin-left:8px;">قائمة أعراض البالغين</span>
+                                    </t>
+                                    <t t-else="">
+                                        <span>Symptom Checklist</span>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+
+
+                        <div style="height:15px;"></div>
+
+
+                        <table class="sc-table"
+                               style="width:100%; border-collapse: separate; border-spacing:0; margin-top:10px;">
+                            <tr>
+                                <td style="width:15%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; font-weight:bold;">
+                                    Patient Code:
+                                </td>
+                                <td style="width:35%; padding:8px; border:1px solid #d9d9d9; border-radius:6px;">
+                                    <span t-esc="o.code"/>
+                                </td>
+                                <td style="width:15%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; font-weight:bold;">
+                                    Patient:
+                                </td>
+                                <td style="width:35%; padding:8px; border:1px solid #d9d9d9; border-radius:6px;">
+                                    <span t-esc="o.display_name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:15%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; font-weight:bold;">
+                                    Gender:
+                                </td>
+                                <td style="width:35%; padding:8px; border:1px solid #d9d9d9; border-radius:6px;">
+                                    <span t-esc="o.gender"/>
+                                </td>
+                                <td style="width:15%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; font-weight:bold;">
+                                    Age:
+                                </td>
+                                <td style="width:35%; padding:8px; border:1px solid #d9d9d9; border-radius:6px;">
+                                    <span t-esc="o.patient_age"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:15%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; font-weight:bold;">
+                                    Doctor:
+                                </td>
+                                <td style="width:35%; padding:8px; border:1px solid #d9d9d9; border-radius:6px;">
+                                    <span t-esc="o.doctor_id.display_name or ''"/>
+                                </td>
+                                <td style="width:15%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; font-weight:bold;">
+                                    Session Date:
+                                </td>
+                                <td style="width:35%; padding:8px; border:1px solid #d9d9d9; border-radius:6px;">
+                                    <span t-esc="o.date"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <div style="height:15px;"></div>
+
+                        <table class="sc-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:60%">Symptom / العرض</th>
+                                    <th style="width:12%" class="text-center">Yes / نعم</th>
+                                    <th style="width:12%" class="text-center">No / لا</th>
+                                    <th style="width:16%">Notes / ملاحظات</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <t t-foreach="o.symptom_line_ids" t-as="line">
+
+                                    <!-- Section row -->
+                                    <t t-if="line.display_type == 'line_section'">
+                                        <tr class="sc-section-row">
+                                            <th class="sc-sec" colspan="4">
+                                                <t t-esc="line.name or ''"/>
+                                            </th>
+                                        </tr>
+                                    </t>
+
+                                    <!-- Normal symptom row -->
+                                    <t t-else="">
+                                        <tr>
+                                            <td>
+                                                <div>
+                                                    <t t-esc="line.name or ''"/>
+                                                </div>
+                                            </td>
+
+                                            <td class="text-center">
+                                                <span class="box yes">
+                                                    <t t-if="line.present">✓</t>
+                                                </span>
+                                            </td>
+
+                                            <td class="text-center">
+                                                <span class="box no">
+                                                    <t t-if="line.absent">✓</t>
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <t t-esc="line.notes or ''"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+
+                                </t>
+                            </tbody>
+                        </table>
+                        <div style="height:15px;"></div>
+
+                        <table class="sc-meta"
+                               style="width:100%; border-collapse: separate; border-spacing:0; margin-top:10px;">
+                            <!-- Header row -->
+                            <tr>
+                                <th style="width:50%; padding:8px; border:1px solid #d9d9d9; border-radius:6px 6px 0 0; background:#f5f5f5; text-align:left;">
+                                    Core Symptoms ? / الأعراض الأساسية؟
+                                </th>
+                                <th style="width:50%; padding:8px; border:1px solid #d9d9d9; border-radius:6px 6px 0 0; background:#f5f5f5; text-align:left;">
+                                    Any Medications or Reports? / أي أدوية أو تقارير؟
+                                </th>
+                            </tr>
+
+                            <!-- Body row -->
+                            <tr>
+                                <td style="width:50%; padding:8px; border:1px solid #d9d9d9; border-radius:0 0 6px 6px; vertical-align:top;">
+                                    <span t-esc="o.core_symptoms or ''"/>
+                                </td>
+                                <td style="width:50%; padding:8px; border:1px solid #d9d9d9; border-radius:0 0 6px 6px; vertical-align:top;">
+                                    <span t-esc="o.medications or ''"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div style="height:15px;"></div>
+
+                        <!-- Patient Table -->
+                        <table class="sc-meta"
+                               style="width:100%; border-collapse: separate; border-spacing:0; margin-top:10px;">
+                            <!-- Header row -->
+                            <tr>
+                                <th style="width:50%; padding:6px; border:1px solid #d9d9d9; border-radius:6px 6px 0 0; background:#f5f5f5; text-align:left;">
+                                    Patient Name / اسم المريض
+                                </th>
+                                <th style="width:50%; padding:6px; border:1px solid #d9d9d9; border-radius:6px 6px 0 0; background:#f5f5f5; text-align:left;">
+                                    Patient Signature / توقيع المريض
+                                </th>
+                            </tr>
+
+                            <!-- Body row -->
+                            <tr>
+                                <td style="width:50%; padding:4px 6px; border:1px solid #d9d9d9; border-radius:0 0 6px 6px; vertical-align:top; line-height:14px;">
+                                    <span t-if="o.name" t-esc="o.name"/>
+                                    <span t-if="not o.name" class="sc-subtle"
+                                          style="margin-left:4px; border-bottom:1px solid #000; display:inline-block; min-width:120px;">
+                                        ______________________
+                                    </span>
+                                </td>
+                                <td style="width:50%; padding:4px 6px; border:1px solid #d9d9d9; border-radius:0 0 6px 6px; vertical-align:top; line-height:14px;">
+                                    <span t-if="not o.signature" class="sc-subtle"
+                                          style="margin-left:4px; border-bottom:1px solid #000; display:inline-block; min-width:120px;">
+                                        ______________________
+                                    </span>
+                                    <t t-if="o.signature">
+                                        <img t-att-src="'/web/image/%s/%s/signature' % (o._name, o.id)"
+                                             style="max-height:60px; margin-left:4px; vertical-align:middle;"/>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Doctor Table -->
+                        <table class="sc-meta"
+                               style="width:100%; border-collapse: separate; border-spacing:0; margin-top:10px;">
+                            <!-- Header row -->
+                            <tr>
+                                <th style="width:50%; padding:6px; border:1px solid #d9d9d9; border-radius:6px 6px 0 0; background:#f5f5f5; text-align:left;">
+                                    Doctor Name / اسم الطبيب
+                                </th>
+                                <th style="width:50%; padding:6px; border:1px solid #d9d9d9; border-radius:6px 6px 0 0; background:#f5f5f5; text-align:left;">
+                                    Doctor Signature / توقيع الطبيب
+                                </th>
+                            </tr>
+
+                            <!-- Body row -->
+                            <tr>
+                                <td style="width:50%; padding:4px 6px; border:1px solid #d9d9d9; border-radius:0 0 6px 6px; vertical-align:top; line-height:14px;">
+                                    <span t-if="o.doctor_id" t-esc="o.doctor_id.name"/>
+                                    <span t-if="not o.doctor_id" class="sc-subtle"
+                                          style="margin-left:4px; border-bottom:1px solid #000; display:inline-block; min-width:120px;">
+                                        ______________________
+                                    </span>
+                                </td>
+                                <td style="width:50%; padding:4px 6px; border:1px solid #d9d9d9; border-radius:0 0 6px 6px; vertical-align:top; line-height:14px;">
+                                    <span t-if="not o.doctor_id.signature" class="sc-subtle"
+                                          style="margin-left:4px; border-bottom:1px solid #000; display:inline-block; min-width:120px;">
+                                        ______________________
+                                    </span>
+                                    <t t-if="o.doctor_id.signature">
+                                        <img t-att-src="'/web/image/%s/%s/signature' % (o._name, o.id)"
+                                             style="max-height:50px; margin-left:4px; vertical-align:middle;"/>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+
+
+                        <div style="page-break-after:always"/>
+
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
+    <record id="action_report_follow_up" model="ir.actions.report">
+        <field name="name">Follow Up</field>
+        <field name="model">res.patients</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="binding_model_id" ref="tarkeez_neuro_clinic.model_res_patients"/>
+        <field name="report_name">tarkeez_neuro_clinic.report_follow_up_template</field>
+        <field name="report_file">tarkeez_neuro_clinic.report_follow_up_template</field>
+        <field name="print_report_name">
+            (object.name and 'Follow Up - %s' % object.name or 'Symptom Checklist')
+        </field>
+    </record>
+
+    <template id="report_follow_up_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <style>
+                            /* Page settings */
+                            @page {
+                            size: A4;
+                            margin: 10mm;
+                            }
+
+                            /* Header and footer */
+                            .o_report_layout .header,
+                            .o_report_layout .o_header {
+                            padding: 4px 0 !important;
+                            margin-bottom: 6px !important;
+                            }
+                            .o_report_layout .footer,
+                            .o_report_layout .o_footer {
+                            padding: 4px 0 !important;
+                            margin-top: 6px !important;
+                            font-size: 12px;
+                            }
+
+                            /* Section title */
+                            .sc-title {
+                            font-size: 18px;
+                            font-weight: 700;
+                            margin: 0 0 6px 0;
+                            }
+
+                            /* Subtle text */
+                            .sc-subtle {
+                            color: #666;
+                            }
+
+                            /* Meta table */
+                            .sc-meta {
+                            width: 100%;
+                            margin: 6px 0;
+                            }
+                            .sc-meta td {
+                            padding: 2px 6px;
+                            font-size: 12px;
+                            }
+
+                            /* Symptom table */
+                            .sc-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 4px;
+                            }
+                            .sc-table th,
+                            .sc-table td {
+                            border: 1px solid #d9d9d9;
+                            padding: 5px 7px;
+                            font-size: 12px;
+                            vertical-align: top;
+                            }
+                            .sc-table th {
+                            background: #f5f5f5;
+                            }
+                            .sc-sec {
+                            background: #eef3fb;
+                            font-weight: 600;
+                            }
+
+                            /* Checkboxes */
+                            .box {
+                            display: inline-block;
+                            width: 12px;
+                            height: 12px;
+                            border: 1px solid #888;
+                            text-align: center;
+                            line-height: 12px;
+                            font-size: 12px;
+                            border-radius: 2px;
+                            }
+                            .yes { color: #0a6; }
+                            .no { color: #c33; }
+
+                            /* Muted text */
+                            .muted {
+                            color: #888;
+                            font-size: 12px;
+                            }
+
+                            /* Section row */
+                            .sc-section-row th {
+                            border-top: 2px solid #bcd;
+                            }
+                        </style>
+                        <table style="border-collapse: separate; border-spacing:0; border:1px solid #000;
+              border-radius:15px 50px 30px; background-color:#f5f5f5; display: table; margin: 10px auto;">
+                            <tr>
+                                <td style="font-weight: bold; font-size:20px; text-align: center; padding:15px 20px; color:#000;">
+                                    <span>Follow Up Details</span>
+                                </td>
+                            </tr>
+                        </table>
+                        <div style="height:15px;"></div>
+
+
+                        <table class="sc-table"
+                               style="width:100%; border-collapse: separate; border-spacing:0; margin-top:10px;">
+                            <tr>
+                                <td style="width:15%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; font-weight:bold;">
+                                    Patient Code:
+                                </td>
+                                <td style="width:35%; padding:8px; border:1px solid #d9d9d9; border-radius:6px;">
+                                    <span t-esc="o.code"/>
+                                </td>
+                                <td style="width:15%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; font-weight:bold;">
+                                    Patient:
+                                </td>
+                                <td style="width:35%; padding:8px; border:1px solid #d9d9d9; border-radius:6px;">
+                                    <span t-esc="o.display_name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:15%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; font-weight:bold;">
+                                    Gender:
+                                </td>
+                                <td style="width:35%; padding:8px; border:1px solid #d9d9d9; border-radius:6px;">
+                                    <span t-esc="o.gender"/>
+                                </td>
+                                <td style="width:15%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; font-weight:bold;">
+                                    Age:
+                                </td>
+                                <td style="width:35%; padding:8px; border:1px solid #d9d9d9; border-radius:6px;">
+                                    <span t-esc="o.patient_age"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:15%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; font-weight:bold;">
+                                    Doctor:
+                                </td>
+                                <td style="width:35%; padding:8px; border:1px solid #d9d9d9; border-radius:6px;">
+                                    <span t-esc="o.doctor_id.display_name or ''"/>
+                                </td>
+                                <td style="width:15%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; font-weight:bold;">
+                                    Session Date:
+                                </td>
+                                <td style="width:35%; padding:8px; border:1px solid #d9d9d9; border-radius:6px;">
+                                    <span t-esc="o.date"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <div style="height:15px;"></div>
+                        <table class="sc-meta"
+                               style="width:100%; border-collapse: separate; border-spacing:0; margin-top:10px;">
+                            <!-- Header row -->
+                            <tr>
+                                <th style="width:50%; padding:8px; border:1px solid #d9d9d9; border-radius:6px 6px 0 0; background:#f5f5f5; text-align:left;">
+                                    Diagnosis / التشخيص
+                                </th>
+                                <th style="width:50%; padding:8px; border:1px solid #d9d9d9; border-radius:6px 6px 0 0; background:#f5f5f5; text-align:left;">
+                                    QID / معرف الاستبيان
+                                </th>
+                            </tr>
+
+                            <!-- Body row -->
+                            <tr>
+                                <td style="width:50%; padding:8px; border:1px solid #d9d9d9; border-radius:0 0 6px 6px;">
+                                    <span t-esc="o.diagnosis or ''"/>
+                                </td>
+                                <td style="width:50%; padding:8px; border:1px solid #d9d9d9; border-radius:0 0 6px 6px;">
+                                    <span t-esc="o.qid or ''"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div style="height:15px;"></div>
+
+
+                        <table class="sc-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:15%">Date / التاريخ</th>
+                                    <th style="width:25%">Protocol Used / البروتوكول المستخدم</th>
+                                    <th style="width:25%">Observation / الملاحظات</th>
+                                    <th style="width:20%">Parent Feedback / ملاحظات الأهل</th>
+                                    <th style="width:15%">Notes / ملاحظات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.follow_up_ids" t-as="line">
+                                    <tr>
+                                        <td>
+                                            <t t-esc="line.date or ''"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.protolused or ''"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.observation or ''"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.parent_feedback or ''"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.notes or ''"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                        <div style="height:15px;"></div>
+
+                        <!-- Doctor Table -->
+                        <table class="sc-meta"
+                               style="width:100%; border-collapse: separate; border-spacing:0; margin-top:10px;">
+                            <!-- Header row -->
+                            <tr>
+                                <th style="width:50%; padding:6px; border:1px solid #d9d9d9; border-radius:6px 6px 0 0; background:#f5f5f5; text-align:left;">
+                                    Doctor Name / اسم الطبيب
+                                </th>
+                                <th style="width:50%; padding:6px; border:1px solid #d9d9d9; border-radius:6px 6px 0 0; background:#f5f5f5; text-align:left;">
+                                    Doctor Signature / توقيع الطبيب
+                                </th>
+                            </tr>
+
+                            <!-- Body row -->
+                            <tr>
+                                <td style="width:50%; padding:4px 6px; border:1px solid #d9d9d9; border-radius:0 0 6px 6px; vertical-align:top; line-height:14px;">
+                                    <span t-if="o.doctor_id" t-esc="o.doctor_id.name"/>
+                                    <span t-if="not o.doctor_id" class="sc-subtle"
+                                          style="margin-left:4px; border-bottom:1px solid #000; display:inline-block; min-width:120px;">
+                                        ______________________
+                                    </span>
+                                </td>
+                                <td style="width:50%; padding:4px 6px; border:1px solid #d9d9d9; border-radius:0 0 6px 6px; vertical-align:top; line-height:14px;">
+                                    <span t-if="not o.doctor_id.signature" class="sc-subtle"
+                                          style="margin-left:4px; border-bottom:1px solid #000; display:inline-block; min-width:120px;">
+                                        ______________________
+                                    </span>
+                                    <t t-if="o.doctor_id.signature">
+                                        <img t-att-src="'/web/image/%s/%s/signature' % (o._name, o.id)"
+                                             style="max-height:50px; margin-left:4px; vertical-align:middle;"/>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_last" model="ir.actions.report">
+        <field name="name">INFORMED CONSENT</field>
+        <field name="model">res.patients</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="binding_model_id" ref="tarkeez_neuro_clinic.model_res_patients"/>
+        <field name="report_name">tarkeez_neuro_clinic.report_last_template</field>
+        <field name="report_file">tarkeez_neuro_clinic.report_last_template</field>
+        <field name="print_report_name">
+            (object.name and 'INFORMED CONSENT - %s' % object.name or 'Symptom Checklist')
+        </field>
+    </record>
+
+    <template id="report_last_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <table style="border-collapse: separate; border-spacing:0; border:1px solid #000;border-radius:15px 50px 30px; background-color:#f5f5f5; display: table; margin: 10px auto;">
+                            <tr>
+                                <td style="font-weight: bold; font-size:16px; text-align: center; padding:15px 20px; color:#000;">
+                                    <span>INFORMED CONSENT FOR QEEG / NEUROFEEDBACK</span>
+                                    <span>Training by TARKEEZ NEURO CENTER.</span>
+
+                                </td>
+                            </tr>
+                        </table>
+                        <div style="height:15px;"></div>
+
+
+                        <table class="sc-table"
+                               style="width:100%; border-collapse: separate; border-spacing:0; margin-top:10px;">
+                            <tr>
+                                <td style="width:15%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; font-weight:bold;">
+                                    Patient Code:
+                                </td>
+                                <td style="width:35%; padding:8px; border:1px solid #d9d9d9; border-radius:6px;">
+                                    <span t-esc="o.code"/>
+                                </td>
+                                <td style="width:15%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; font-weight:bold;">
+                                    Patient:
+                                </td>
+                                <td style="width:35%; padding:8px; border:1px solid #d9d9d9; border-radius:6px;">
+                                    <span t-esc="o.display_name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:15%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; font-weight:bold;">
+                                    Gender:
+                                </td>
+                                <td style="width:35%; padding:8px; border:1px solid #d9d9d9; border-radius:6px;">
+                                    <span t-esc="o.gender"/>
+                                </td>
+                                <td style="width:15%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; font-weight:bold;">
+                                    Age:
+                                </td>
+                                <td style="width:35%; padding:8px; border:1px solid #d9d9d9; border-radius:6px;">
+                                    <span t-esc="o.patient_age"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:15%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; font-weight:bold;">
+                                    Doctor:
+                                </td>
+                                <td style="width:35%; padding:8px; border:1px solid #d9d9d9; border-radius:6px;">
+                                    <span t-esc="o.doctor_id.display_name or ''"/>
+                                </td>
+                                <td style="width:15%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; font-weight:bold;">
+                                    Session Date:
+                                </td>
+                                <td style="width:35%; padding:8px; border:1px solid #d9d9d9; border-radius:6px;">
+                                    <span t-esc="o.date"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <div style="height:15px;"></div>
+
+                        <table class="sc-table"
+                               style="width:100%; border-collapse: separate; border-spacing:5px 0; margin-top:10px;">
+                            <tr>
+                                <!-- English Column on Right -->
+                                <td style="width:50%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; vertical-align:top; direction:ltr; text-align:left;">
+                                    <h4>Informed Consent for Neurofeedback (NFB)</h4>
+                                    <p>
+                                        Welcome to Tarkeez Neuro Centre for Neurofeedback. We are licensed practitioners
+                                        who use advanced neuroscience clinical solutions, including Neurofeedback (NFB)
+                                        and quantitative EEG (qEEG) based on FDA-approved standards. Our team is
+                                        licensed
+                                        by the Qatar Ministry of Public Health and practices Neurotherapy under medical
+                                        privilege and American Board Certification.
+                                    </p>
+
+                                    <h4>What is Neurofeedback?</h4>
+                                    <p>
+                                        Neurofeedback uses sensors placed on the scalp to monitor electrical brain
+                                        activity
+                                        and provide moment-to-moment feedback to improve neurophysiological functioning.
+                                        “Rewards” and “inhibits” are used based on protocols derived from qEEG maps and
+                                        clinical presentation.
+                                    </p>
+
+                                    <h4>Supporting Biofeedback Methods</h4>
+                                    <p>
+                                        Additional biofeedback tools may be used such as heart rate variability, muscle
+                                        tension, skin conductance, and temperature. Success requires client
+                                        participation
+                                        including lifestyle changes and home exercises to enhance cognitive performance.
+                                    </p>
+                                </td>
+                                <!-- Arabic Column on Left -->
+                                <td style="width:50%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; vertical-align:top; direction:rtl; text-align:right;">
+                                    <h4>الموافقة على تلقي العلاج العصبي (النيوروفيدباك)</h4>
+                                    <p>
+                                        مرحبًا بكم في مركز تاركيز نيورو للتدريب العصبي. نحن ممارسون مختصون نستخدم أحدث
+                                        الحلول السريرية المبنية على علم الأعصاب، باستخدام تقنية النيوروفيدباك
+                                        (Neurofeedback)
+                                        وتحليل تخطيط الدماغ الكمي (qEEG) المعتمدة وفق معايير FDA. نحن مرخصون من وزارة
+                                        الصحة العامة في قطر ونمارس العلاج العصبي بامتياز طبي وشهادة بورد أمريكية.
+                                    </p>
+
+                                    <h4>ما هو النيوروفيدباك؟</h4>
+                                    <p>
+                                        النيوروفيدباك يستخدم أجهزة استشعار على فروة الرأس لقياس النشاط الكهربائي للدماغ
+                                        وتقديم تغذية راجعة لحظة بلحظة لتحسين الأداء العصبي. يتم التدريب عبر “المكافآت”
+                                        و“المثبطات” وفق بروتوكولات مستندة إلى خرائط qEEG والحالة الإكلينيكية.
+                                    </p>
+
+                                    <h4>طرق مساندة للتغذية الراجعة (Biofeedback)</h4>
+                                    <p>
+                                        قد تُستخدم تقنيات ارتجاع بيولوجي إضافية مثل: تقلب معدل نبض القلب، توتر العضلات،
+                                        حرارة الجسم، والتوصيل الجلدي. ويتطلب النجاح جهداً من العميل مثل تعديل نمط الحياة
+                                        والواجبات المنزلية لتعزيز الأداء المعرفي.
+                                    </p>
+                                </td>
+
+
+                            </tr>
+                        </table>
+                        <div style="height:10px;"></div>
+                        <table class="sc-table"
+                               style="width:100%; border-collapse: separate;  border-spacing:5px 0; margin-top:10px;">
+                            <tr>
+                                <!-- English Column on Right -->
+                                <td style="width:50%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; vertical-align:top; direction:ltr; text-align:left;">
+                                    <h4>Treatment Nature and Effects</h4>
+                                    <p>
+                                        This is a non-pharmaceutical alternative and is not intended to replace medical
+                                        care.
+                                        Some clients may experience temporary fatigue, headaches, emotional sensitivity,
+                                        or discomfort as new neural pathways form. Any concerns should be discussed with
+                                        the clinical team.
+                                    </p>
+
+                                    <h4>Client and Parent Responsibilities</h4>
+                                    <p>
+                                        For children, parents are responsible for creating a supportive environment,
+                                        tracking
+                                        progress, and reporting observations to the team.
+                                    </p>
+
+                                    <h4>Acknowledgement and Consent</h4>
+                                    <p>
+                                        I hereby consent to receive Neurofeedback services from Tarkeez Neuro Centre and
+                                        accept full financial responsibility for all related fees. I agree that all
+                                        conditions
+                                        stated above apply to my treatment, and I commit to making payments as agreed
+                                        with
+                                        the centre’s management.
+                                    </p>
+                                </td>
+                                <!-- Arabic Column on Left -->
+                                <td style="width:50%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; vertical-align:top; direction:rtl; text-align:right;">
+                                    <h4>طبيعة العلاج وآثاره</h4>
+                                    <p>
+                                        العلاج غير دوائي وليس بديلاً عن العلاج الطبي. قد يشعر العميل بتعب أو صداع أو
+                                        حساسية عاطفية مؤقتة، وهي جزء طبيعي من بناء مسارات عصبية جديدة. في حال وجود أي
+                                        مخاوف، يُرجى مناقشتها مع الفريق.
+                                    </p>
+
+                                    <h4>مسؤوليات العميل وولي الأمر</h4>
+                                    <p>
+                                        في حالة الأطفال، تقع المسؤولية على الوالدين لمتابعة التحسن وتوفير بيئة داعمة
+                                        وإبلاغ الفريق بأي ملاحظات.
+                                    </p>
+
+                                    <h4>الإقرار والموافقة</h4>
+                                    <p>
+                                        أقر بأنني أوافق على تلقي خدمات النيوروفيدباك من مركز تاركيز نيورو وأتحمل
+                                        المسؤولية
+                                        المالية الكاملة. كما أوافق على تطبيق جميع الشروط المذكورة أعلاه، والالتزام بسداد
+                                        الرسوم المتفق عليها مع إدارة المركز.
+                                    </p>
+                                </td>
+
+
+                            </tr>
+                        </table>
+                        <div style="height:8px;"></div>
+                        <table style="width:100%; border-collapse: separate; border-spacing:5px 5px; margin-top:20px;">
+                            <tr>
+                                <td style="width:30%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; direction:ltr; text-align:left; font-weight:bold;">
+                                    Client’s Name
+                                </td>
+                                <td style="width:40%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; vertical-align:middle; text-align:center;">
+                                    <div style="height:30px; display:flex; align-items:center; justify-content:center;">
+                                        <span t-esc="o.display_name"/>
+                                    </div>
+                                </td>
+                                <td style="width:30%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; direction:rtl; text-align:right; font-weight:bold;">
+                                    اسم العميل
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td style="padding:8px; border:1px solid #d9d9d9; border-radius:6px; direction:ltr; text-align:left; font-weight:bold;">
+                                    QID
+                                </td>
+                                <td style="padding:8px; border:1px solid #d9d9d9; border-radius:6px; text-align:center; vertical-align:middle;">
+                                    <span t-esc="o.qid or ''"/>
+                                </td>
+
+
+                                <td style="padding:8px; border:1px solid #d9d9d9; border-radius:6px; direction:rtl; text-align:right; font-weight:bold;">
+                                    رقم الهوية
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="padding:8px; border:1px solid #d9d9d9; border-radius:6px; direction:ltr; text-align:left; font-weight:bold;">
+                                    Client’s Signature
+                                </td>
+                                <td style="width:40%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; vertical-align:middle; text-align:center;">
+                                    <t t-if="o.signature">
+                                        <img t-att-src="'/web/image/%s/%s/signature' % (o._name, o.id)"
+                                             style="max-height:50px; display:inline-block; vertical-align:middle;"/>
+                                    </t>
+                                </td>
+
+                                <td style="padding:8px; border:1px solid #d9d9d9; border-radius:6px; direction:rtl; text-align:right; font-weight:bold;">
+                                    توقيع العميل
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td style="padding:8px; border:1px solid #d9d9d9; border-radius:6px; direction:ltr; text-align:left; font-weight:bold;">
+                                    Printed Name of Practitioner
+                                </td>
+                                <td style="width:35%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; text-align:center; vertical-align:middle;">
+                                    <span t-esc="o.doctor_id.display_name or ''"/>
+                                </td>
+
+                                <td style="padding:8px; border:1px solid #d9d9d9; border-radius:6px; direction:rtl; text-align:right; font-weight:bold;">
+                                    اسم الممارس
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="padding:8px; border:1px solid #d9d9d9; border-radius:6px; direction:ltr; text-align:left; font-weight:bold;">
+                                    Signature of Practitioner
+                                </td>
+                                <td style="width:40%; padding:8px; border:1px solid #d9d9d9; border-radius:6px; vertical-align:middle; text-align:center;">
+                                    <t t-if="o.doctor_id.signature">
+                                        <img t-att-src="'/web/image/%s/%s/signature' % (o._name, o.id)"
+                                             style="max-height:50px; display:inline-block; vertical-align:middle;"/>
+                                    </t>
+                                </td>
+
+                                <td style="padding:8px; border:1px solid #d9d9d9; border-radius:6px; direction:rtl; text-align:right; font-weight:bold;">
+                                    توقيع الممارس
+                                </td>
+                            </tr>
+
+
+                        </table>
+
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
+
+
+
+
+

@@ -1,6 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-tarkeez_patient_user,tarkeez.patient user,model_tarkeez_patient,base.group_user,1,1,1,1
-tarkeez_appointment_user,tarkeez.appointment user,model_tarkeez_appointment,base.group_user,1,1,1,1
-tarkeez_nfb_form_user,tarkeez.nfb_form user,model_tarkeez_nfb_form,base.group_user,1,1,1,1
-tarkeez_symptom_checklist_kids_user,tarkeez.symptom_checklist_kids user,model_tarkeez_symptom_checklist_kids,base.group_user,1,1,1,1
-tarkeez_symptom_line_kids_user,tarkeez.symptom_line_kids user,model_tarkeez_symptom_line_kids,base.group_user,1,1,1,1

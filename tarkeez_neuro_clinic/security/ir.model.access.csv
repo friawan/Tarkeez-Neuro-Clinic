@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_res_doctors,res.doctors,model_res_doctors,base.group_user,1,1,1,1
+access_res_patients,res.patients,model_res_patients,base.group_user,1,1,1,1
+access_res_employee,res.employee,model_res_employee,base.group_user,1,1,1,1
+access_res_appointments,res.appointments,model_res_appointments,base.group_user,1,1,1,1
+access_res_services,res.services,model_res_services,base.group_user,1,1,1,1
+access_res_services_line,res.services.line,model_res_services_line,base.group_user,1,1,1,1
+access_tarkeez_follow_up_line,tarkeez.follow.up.line,model_tarkeez_follow_up_line,base.group_user,1,1,1,1
+access_res_symptom,res.symptom,model_res_symptom,base.group_user,1,1,1,1
+access_tarkeez_symptom_line,tarkeez.symptom.line,model_tarkeez_symptom_line,base.group_user,1,1,1,1
