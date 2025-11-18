@@ -18,7 +18,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','mail','web'],
+    'depends': ['base','mail','web','account'],
 
     # always loaded
     'data': [
@@ -26,12 +26,16 @@
         'views/views.xml',
         'reports/trakeez_reports.xml',
         'views/templates.xml',
+        'wizard/package.xml',
         'data/ir_sequence.xml',
 
     ],
     'assets': {
         'web.assets_backend': [
             'tarkeez_neuro_clinic/static/src/css/style.css',
+        ],
+        "web.report_assets_pdf": [
+             'tarkeez_neuro_clinic/static/src/css/style.css',
         ],
     },
     # only loaded in demonstration mode

@@ -8,3 +8,8 @@ access_res_services_line,res.services.line,model_res_services_line,base.group_us
 access_tarkeez_follow_up_line,tarkeez.follow.up.line,model_tarkeez_follow_up_line,base.group_user,1,1,1,1
 access_res_symptom,res.symptom,model_res_symptom,base.group_user,1,1,1,1
 access_tarkeez_symptom_line,tarkeez.symptom.line,model_tarkeez_symptom_line,base.group_user,1,1,1,1
+access_patient_package,patient.package,model_patient_package,base.group_user,1,1,1,1
+access_patient_package_installment,patient.package.installment,model_patient_package_installment,base.group_user,1,1,1,1
+access_patient_session,patient.session,model_patient_session,base.group_user,1,1,1,1
+access_patient_package_wizard,patient.package.wizard,model_patient_package_wizard,base.group_user,1,1,1,1
+access_res_section,res.section,model_res_section,base.group_user,1,1,1,1

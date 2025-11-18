@@ -47,9 +47,12 @@
 
                             </group>
                             <group>
-                                <field name="patient_id" options="{'no_create': True, 'no_open': True}"/>
-                                <field name="doctor_id" options="{'no_create': True, 'no_open': True}"/>
-                                <field name="employee_id" options="{'no_create': True, 'no_open': True}"/>
+                                <field name="patient_id" widget="many2one_avatar_user"
+                                       options="{'no_create': True, 'no_open': True}"/>
+                                <field name="doctor_id" widget="many2one_avatar_user"
+                                       options="{'no_create': True, 'no_open': True}"/>
+                                <field name="employee_id" widget="many2one_avatar_user"
+                                       options="{'no_create': True, 'no_open': True}"/>
                                 <!--                                <field name="services_id" options="{'no_create': True, 'no_open': True}"/>-->
                             </group>
                         </group>
@@ -85,8 +88,6 @@
             <field name="res_model">res.appointments</field>
             <field name="view_mode">calendar,list,form</field>
         </record>
-
-
         <!--__________________________doctors___________________________________________-->
 
         <record model="ir.ui.view" id="doctors_list">
@@ -198,10 +199,73 @@
                 </form>
             </field>
         </record>
+        <record id="doctor_kanban_view" model="ir.ui.view">
+            <field name="name">res.doctors.kanban</field>
+            <field name="model">res.doctors</field>
+            <field name="arch" type="xml">
+                <kanban>
+
+                    <templates>
+                        <t t-name="card" class="flex-row">
+                            <!-- Archived Ribbon -->
+                            <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+
+                            <!-- Left Image Section -->
+                            <aside class="o_kanban_aside_full">
+                                <div class="o_kanban_image_fill position-relative w-100">
+                                    <field name="avatar_128"
+                                           widget="image"
+                                           alt="Doctor Photo"
+                                           class="h-100"
+                                           options="{'img_class': 'object-fit-cover'}"/>
+                                </div>
+                            </aside>
+
+                            <!-- Right Info Section -->
+                            <main class="ps-2 ps-md-0">
+
+                                <!-- Name & Specialization -->
+                                <div class="mb-1">
+                                    <field name="name" class="mb-0 fw-bold fs-5"/>
+
+                                </div>
+                                <field name="function"
+                                       class="text-muted"
+                                       placeholder="Specialization"/>
+
+                                <!-- Information Section -->
+                                <div class="mt-2 text-muted small">
+
+                                    <div class="d-flex" t-if="record.phone.value">
+                                        <strong class="me-1">Phone:</strong>
+                                        <field name="phone"/>
+                                    </div>
+
+                                    <div class="d-flex" t-if="record.title.value">
+                                        <strong class="me-1">Title:</strong>
+                                        <field name="title"/>
+                                    </div>
+
+
+                                    <div class="d-flex" t-if="record.email.value">
+                                        <strong class="me-1">Email:</strong>
+                                        <field name="email"/>
+                                    </div>
+
+                                </div>
+
+                            </main>
+
+                        </t>
+                    </templates>
+
+                </kanban>
+            </field>
+        </record>
         <record model="ir.actions.act_window" id="doctors_action_window">
             <field name="name">Doctors Tarkeez Neuro</field>
             <field name="res_model">res.doctors</field>
-            <field name="view_mode">list,form,kanban</field>
+            <field name="view_mode">kanban,list,form</field>
         </record>
         <!--___________________________patients__________________________________________-->
 
@@ -210,6 +274,25 @@
             <field name="model">res.patients</field>
             <field name="arch" type="xml">
                 <form string="Patients">
+                    <header>
+                        <group>
+                            <button name="action_regenerate_symptoms"
+                                    type="object"
+                                    string="Regenerate Symptoms"
+                                    confirm="This will reset all symptom lines. Continue?"
+                                    class="oe_highlight"/>
+
+
+                        </group>
+                        <group>
+                            <button name="action_add_package"
+                                    type="object"
+                                    string="Add Package / Session"
+                                    class="oe_highlight"/>
+                        </group>
+
+
+                    </header>
                     <div class="alert alert-warning oe_edit_only" role="alert" name="warning_tax"
                          invisible="not same_vat_partner_id">
                         A partner with the same
@@ -231,6 +314,33 @@
                         create a new one?
                     </div>
                     <sheet>
+
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_invoices"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-files-o"
+                                    invisible="invoice_count == 0">
+                                <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                            </button>
+
+                            <button name="action_view_packages"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-th"
+                                    invisible="package_count == 0">
+                                <field name="package_count" widget="statinfo" string="Packages"/>
+                            </button>
+                            <button name="action_view_appointments"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-calendar"
+                                    invisible="appointment_count == 0">
+                                <field name="appointment_count" widget="statinfo" string="Appointments"/>
+                            </button>
+                        </div>
+
+
                         <div class="oe_button_box" name="button_box"/>
                         <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
                         <field name="avatar_128" invisible="1"/>
@@ -268,7 +378,8 @@
                                 <field name="email" placeholder="e.g. example@gmail.com" invisible="is_company"/>
                                 <field name="user_ids" invisible="1"/>
                                 <field name="active_lang_count" invisible="1"/>
-                                <field name="doctor_id" options="{&quot;no_open&quot;: True}" placeholder="e.g. Dr"/>
+                                <field name="doctor_id" widget="many2one_avatar_user"
+                                       options="{&quot;no_open&quot;: True}" placeholder="e.g. Dr"/>
                                 <field name="signature" widget="signature"/>
 
 
@@ -278,15 +389,10 @@
 
 
                             <page name="nfb_form" string="NFB Forms">
-                                <group>
-                                    <button name="action_regenerate_symptoms"
-                                            type="object"
-                                            string="Regenerate Symptoms"
-                                            confirm="This will reset all symptom lines. Continue?"
-                                            class="btn-primary"/>
-                                </group>
+
                                 <field name="symptom_line_ids" widget="sol_o2m" mode="list,kanban">
-                                    <list editable="top" create="false" delete="false">
+                                    <list editable="top" create="false" delete="false" limit="80"
+                                    >
                                         <control>
                                             <create name="add_symptom" string="Add Symptom"/>
                                             <create name="add_section" string="Add Section"
@@ -300,14 +406,20 @@
                                         <field name="name" attrs="{'readonly': [('display_type','!=',False)]}"
                                                decoration-muted="display_type"/>
                                         <!-- Hide checkboxes for section/note lines -->
-                                        <field name="present" attrs="{'invisible': [('display_type','=',False)]}"/>
-                                        <field name="absent"/>
+                                        <!--                                        <field name="present" attrs="{'invisible': [('display_type','=',False)]}"  widget="boolean_toggle" />-->
+                                        <!--                                        <field name="absent"  widget="boolean_toggle"/>-->
+
+                                        <field name="attendance" widget="radio"
+                                               decoration-success="attendance=='present'"
+                                               decoration-danger="attendance=='absent'"
+                                               options="{'horizontal': true}"
+                                               width="120"/>
                                         <field name="notes"/>
                                     </list>
                                 </field>
 
                                 <div style="text-align: center; font-weight: bold; border-bottom: 1px solid #ccc; margin: 10px 0; padding-bottom: 3px;">
-                                    Symptom  Details
+                                    Symptom Details
                                 </div>
 
                                 <group>
@@ -320,7 +432,7 @@
                                 </group>
 
                             </page>
-                            <page name="follow_up" string="FOLLOW UP">
+                            <page name="follow_up" string="Follow UP">
                                 <group>
                                     <group>
                                         <field name="diagnosis"/>
@@ -346,22 +458,74 @@
                                     </list>
                                 </field>
                             </page>
-                            <page name="services" string="Services">
-                                <field name="services_ids" widget="section_and_note_one2many" mode="list"
+
+                            <!--                            <page name="packages" string="Packages">-->
+                            <!--                                <field name="package_ids" mode="list,form">-->
+
+                            <!--                                    &lt;!&ndash; Tree View &ndash;&gt;-->
+                            <!--                                    <list>-->
+                            <!--                                        <field name="service_id"/>-->
+                            <!--                                        <field name="total_sessions"/>-->
+                            <!--                                        <field name="remaining_sessions"/>-->
+                            <!--                                        <field name="price"/>-->
+                            <!--                                    </list>-->
+
+                            <!--                                    &lt;!&ndash; Form View &ndash;&gt;-->
+                            <!--                                    <form>-->
+                            <!--                                        <group>-->
+                            <!--                                            <field name="service_id"/>-->
+                            <!--                                            <field name="total_sessions" readonly="1"/>-->
+                            <!--                                            <field name="remaining_sessions"/>-->
+                            <!--                                            <field name="price" readonly="1"/>-->
+                            <!--                                        </group>-->
+
+                            <!--                                        <notebook>-->
+                            <!--                                            <page string="Installments">-->
+                            <!--                                                <field name="installment_ids" mode="list,form">-->
+
+                            <!--                                                    <list editable="bottom">-->
+                            <!--                                                        <field name="session_number"/>-->
+                            <!--                                                        <field name="amount"/>-->
+                            <!--                                                        <field name="paid"/>-->
+                            <!--                                                    </list>-->
+
+                            <!--                                                    <form>-->
+                            <!--                                                        <group>-->
+                            <!--                                                            <field name="session_number"/>-->
+                            <!--                                                            <field name="amount"/>-->
+                            <!--                                                            <field name="paid"/>-->
+                            <!--                                                        </group>-->
+                            <!--                                                    </form>-->
+
+                            <!--                                                </field>-->
+                            <!--                                            </page>-->
+                            <!--                                        </notebook>-->
+                            <!--                                    </form>-->
+
+                            <!--                                </field>-->
+                            <!--                            </page>-->
+
+
+                            <page name="session" string="Services/Packages">
+
+
+                                <field name="session_ids" widget="section_and_note_one2many" mode="list"
                                        nolabel="1" colspan="2">
-                                    <list editable="bottom">
-                                        <field name="services_id" option="{'no_create_edit' : True}"/>
-                                        <field name="description"/>
-                                        <field name="state"/>
-                                        <field name="date"/>
-                                        <field name="price" sum="price" widget="monetary" decoration-bf="1"/>
-                                        <field name="paid" sum="paid" widget="monetary" decoration-bf="1"/>
-                                        <field name="bool_field" readonly="1"/>
-                                        <field name="remaining" sum="remaining" widget="monetary" decoration-bf="1"/>
+                                    <list editable="bottom" create="False" delete="False" edit="false" limit="80">
+                                        <field name="service_id"/>
+                                        <field name="session_number" widget="badge" decoration-warning="state=='draft'"
+                                               decoration-success="state=='done'" string="Session #"/>
+                                        <field name="state" widget="badge" decoration-warning="state=='draft'"
+                                               decoration-success="state=='done'"/>
+                                        <button name="action_done" type="object" string="Mark Done"
+                                                invisible="state == 'done'"/>
+                                        <field name="date_done"/>
+                                        <field name="invoice_id" widget="many2one"/>
                                     </list>
                                 </field>
-
                             </page>
+
+
                         </notebook>
 
 
@@ -377,10 +541,10 @@
             <field name="arch" type="xml">
                 <list string="Contacts" sample="1" multi_edit="1">
                     <field name="sequence" widget="handle"/>
+                    <field name="code"/>
                     <field name="display_name" string="Name"/>
                     <field name="function" column_invisible="True"/>
                     <field name="phone" class="o_force_ltr" optional="show"/>
-                    <field name="mobile" optional="hide"/>
                     <field name="email" optional="show"/>
                     <field name="city" optional="show"/>
                     <field name="state_id" optional="hide" readonly="1"/>
@@ -389,15 +553,71 @@
                 </list>
             </field>
         </record>
+        <record id="view_res_patients_kanban" model="ir.ui.view">
+            <field name="name">res.patients.kanban</field>
+            <field name="model">res.patients</field>
+            <field name="arch" type="xml">
+                <kanban sample="1">
+                    <field name="avatar_128"/>
+                    <field name="is_company"/>
+                    <field name="active"/>
+                    <templates>
+                        <t t-name="card" class="flex-row">
+                            <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                            <aside class="o_kanban_aside_full">
+                                <t t-if="!record.is_company.raw_value">
+                                    <div class="o_kanban_image_fill position-relative w-100">
+                                        <field name="avatar_128" alt="Contact image" class="h-100" widget="image"
+                                               options="{'img_class': 'object-fit-cover'}"/>
+                                        <field t-if="record.parent_id.raw_value" name="parent_id"
+                                               class="position-absolute bottom-0 end-0 w-25 bg-light" widget="image"
+                                               options="{'preview_image': 'image_128', 'img_class': 'object-fit-contain'}"/>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <field name="avatar_128" class="w-100" widget="image"
+                                           options="{'img_class': 'object-fit-contain w-100 h-100'}"/>
+                                </t>
+                            </aside>
+                            <main class="ps-2 ps-md-0">
+                                <div class="mb-1">
+                                    <field name="display_name" class="mb-0 fw-bold fs-5"/>
+                                    <field t-if="record.parent_id.raw_value and !record.function.raw_value"
+                                           class="text-muted" name="parent_id"/>
+                                </div>
+
+
+                                <!-- Info Section -->
+                                <div class="mt-2 text-muted small">
+
+                                    <div class="d-flex">
+                                        <strong class="me-1">Age:</strong>
+                                        <field name="patient_age"/>
+                                    </div>
+
+                                    <div class="d-flex">
+                                        <strong class="me-1">Gender:</strong>
+                                        <field name="gender"/>
+                                    </div>
+                                    <div class="d-flex">
+                                        <strong class="me-1">Phone:</strong>
+                                        <field name="phone"/>
+                                    </div>
+
+                                </div>
+                                <div/>
+                            </main>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
         <record model="ir.actions.act_window" id="patients_action_window">
             <field name="name">Patients Tarkeez Neuro</field>
             <field name="res_model">res.patients</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode">kanban,list,form</field>
         </record>
-
         <!--__________________________employee_____________________________________________-->
-
-
         <record model="ir.ui.view" id="employee_form">
             <field name="name">Employee list</field>
             <field name="model">res.employee</field>
@@ -505,13 +725,91 @@
                 </list>
             </field>
         </record>
+        <record id="employee_kanban_view" model="ir.ui.view">
+            <field name="name">employee.kanban</field>
+            <field name="model">res.employee</field>
+            <field name="arch" type="xml">
+                <kanban>
+
+                    <templates>
+                        <t t-name="card" class="flex-row">
+                            <!-- Ribbon -->
+                            <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+
+                            <!-- Left Image Section -->
+                            <aside class="o_kanban_aside_full">
+                                <t t-if="!record.is_company">
+                                    <div class="o_kanban_image_fill position-relative w-100">
+                                        <!-- Main Image -->
+                                        <field name="avatar_128"
+                                               widget="image"
+                                               alt="Employee"
+                                               class="h-100"
+                                               options="{'img_class': 'object-fit-cover'}"/>
+
+                                        <!-- Optional Secondary Image (manager) -->
+                                        <field t-if="record.parent_id.raw_value"
+                                               name="parent_id"
+                                               class="position-absolute bottom-0 end-0 w-25 bg-light"
+                                               widget="image"
+                                               options="{'preview_image': 'avatar_128', 'img_class': 'object-fit-contain'}"/>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <field name="avatar_128"
+                                           widget="image"
+                                           class="w-100"
+                                           options="{'img_class': 'object-fit-contain w-100 h-100'}"/>
+                                </t>
+                            </aside>
+
+                            <!-- Right Info Section -->
+                            <main class="ps-2 ps-md-0">
+
+                                <!-- Name + Function -->
+                                <div class="mb-1">
+                                    <field name="display_name" class="mb-0 fw-bold fs-5"/>
+                                    <field t-if="record.parent_id.raw_value and !record.function.raw_value"
+                                           name="parent_id"
+                                           class="text-muted"/>
+                                </div>
+                                <field name="function"
+                                       class="text-muted"
+                                       placeholder="Specialization"/>
+
+                                <!-- Info Section -->
+                                <div class="mt-2 text-muted small">
+
+                                    <div class="d-flex">
+                                        <strong class="me-1">Phone:</strong>
+                                        <field name="phone"/>
+                                    </div>
+
+                                    <div class="d-flex">
+                                        <strong class="me-1">Title:</strong>
+                                        <field name="title"/>
+                                    </div>
+
+                                    <div class="d-flex">
+                                        <strong class="me-1">Email:</strong>
+                                        <field name="email"/>
+                                    </div>
+
+                                </div>
+
+                            </main>
+
+                        </t>
+                    </templates>
+
+                </kanban>
+            </field>
+        </record>
         <record model="ir.actions.act_window" id="employee_action_window">
             <field name="name">Employee Tarkeez Neuro</field>
             <field name="res_model">res.employee</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode">kanban,list,form</field>
         </record>
-
-
         <!--___________________________services_________________________________-->
         <record model="ir.ui.view" id="services_form">
             <field name="name">services list</field>
@@ -531,10 +829,14 @@
                         <group>
                             <group>
                                 <field name="date"/>
+                                <field name="is_package" widget="boolean_toggle"/>
+                                <field name="sessions_count" invisible="is_package != True"/>
                             </group>
                             <group>
                                 <field name="description"/>
                                 <field name="price"/>
+                                <field name="milestones" invisible="is_package != True" widget="json"
+                                       options="{'mode': 'code'}"/>
                             </group>
                         </group>
                     </sheet>
@@ -573,7 +875,7 @@
                         <group>
                             <group>
                                 <field name="name"/>
-                                <field name="section"/>
+                                <field name="section_id"/>
 
                             </group>
                             <group>
@@ -595,14 +897,106 @@
                     <field name="name" placeholder="e.g. symptom"/>
                     <field name="date"/>
                     <field name="age_group"/>
-                    <field name="section"/>
+                    <field name="section_id"/>
                 </list>
             </field>
         </record>
-
         <record model="ir.actions.act_window" id="symptom_action_window">
             <field name="name">Symptom List</field>
             <field name="res_model">res.symptom</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!--___________________________symptom groups_________________________________-->
+        <record model="ir.ui.view" id="symptom_group_form">
+            <field name="name">Symptom Group</field>
+            <field name="model">res.section</field>
+            <field name="arch" type="xml">
+                <form string="Groups">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                            <group>
+                                <field name="date"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="symptom_group_list">
+           <field name="name">Symptom Group</field>
+            <field name="model">res.section</field>
+            <field name="arch" type="xml">
+                <list string="Symptom" sample="1" multi_edit="1">
+                    <field name="name" placeholder="e.g. symptom"/>
+                    <field name="date"/>
+                </list>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="symptom_res_section_action_window">
+            <field name="name">Symptom Group</field>
+            <field name="res_model">res.section</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+
+        <!--___________________________patient package_________________________________-->
+        <record id="view_patient_package_tree" model="ir.ui.view">
+            <field name="name">patient.package.tree</field>
+            <field name="model">patient.package</field>
+            <field name="arch" type="xml">
+                <list string="Patient Packages">
+                    <field name="patient_id"/>
+                    <field name="service_id"/>
+                    <field name="total_sessions"/>
+                    <field name="remaining_sessions"/>
+                    <field name="price"/>
+                </list>
+            </field>
+        </record>
+        <record id="view_patient_package_form" model="ir.ui.view">
+            <field name="name">patient.package.form</field>
+            <field name="model">patient.package</field>
+            <field name="arch" type="xml">
+                <form string="Patient Package">
+                    <sheet>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="service_id"/>
+                            <field name="total_sessions" readonly="1"/>
+                            <field name="remaining_sessions"/>
+                            <field name="price" readonly="1"/>
+                        </group>
+
+                        <notebook>
+                            <page string="Installments">
+                                <field name="installment_ids" mode="tree,form">
+                                    <list editable="bottom">
+                                        <field name="session_number"/>
+                                        <field name="amount"/>
+                                        <field name="paid"/>
+                                    </list>
+                                    <form>
+                                        <group>
+                                            <field name="session_number"/>
+                                            <field name="amount"/>
+                                            <field name="paid"/>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="action_patient_package" model="ir.actions.act_window">
+            <field name="name">Patient Packages</field>
+            <field name="res_model">patient.package</field>
             <field name="view_mode">list,form</field>
         </record>
 
@@ -648,11 +1042,30 @@
                   parent="tarkeez_neuro_clinic.menu_root"
                   action="tarkeez_neuro_clinic.employee_action_window"/>
 
-        <menuitem name="Symptom Chicklist"
-                  sequence="3"
-                  id="tarkeez_neuro_clinic.menu_Symptom_list"
+
+        <menuitem id="menu_res_symptom"
+                  name="Manage Symptom "
                   parent="tarkeez_neuro_clinic.menu_root"
+                  sequence="10"/>
+
+
+        <menuitem name="Symptom Chicklist"
+                  sequence="2"
+                  id="tarkeez_neuro_clinic.menu_Symptom_list"
+                  parent="tarkeez_neuro_clinic.menu_res_symptom"
                   action="tarkeez_neuro_clinic.symptom_action_window"/>
+
+        <menuitem name="Symptom Groups"
+                  sequence="1"
+                  id="tarkeez_neuro_clinic.menu_group"
+                  parent="tarkeez_neuro_clinic.menu_res_symptom"
+                  action="tarkeez_neuro_clinic.symptom_res_section_action_window"/>
+
+
+        <menuitem id="menu_patient_package_root"
+                  name="Patient Packages"
+                  parent="tarkeez_neuro_clinic.menu_root"
+                  action="tarkeez_neuro_clinic.action_patient_package"/>
 
 
     </data>

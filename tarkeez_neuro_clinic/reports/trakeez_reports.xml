@@ -17,95 +17,6 @@
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <style>
-                            /* Page settings */
-                            @page {
-                            size: A4;
-                            margin: 10mm;
-                            }
-
-                            /* Header and footer */
-                            .o_report_layout .header,
-                            .o_report_layout .o_header {
-                            padding: 4px 0 !important;
-                            margin-bottom: 6px !important;
-                            }
-                            .o_report_layout .footer,
-                            .o_report_layout .o_footer {
-                            padding: 4px 0 !important;
-                            margin-top: 6px !important;
-                            font-size: 12px;
-                            }
-
-                            /* Section title */
-                            .sc-title {
-                            font-size: 18px;
-                            font-weight: 700;
-                            margin: 0 0 6px 0;
-                            }
-
-                            /* Subtle text */
-                            .sc-subtle {
-                            color: #666;
-                            }
-
-                            /* Meta table */
-                            .sc-meta {
-                            width: 100%;
-                            margin: 6px 0;
-                            }
-                            .sc-meta td {
-                            padding: 2px 6px;
-                            font-size: 12px;
-                            }
-
-                            /* Symptom table */
-                            .sc-table {
-                            width: 100%;
-                            border-collapse: collapse;
-                            margin-top: 4px;
-                            }
-                            .sc-table th,
-                            .sc-table td {
-                            border: 1px solid #d9d9d9;
-                            padding: 5px 7px;
-                            font-size: 12px;
-                            vertical-align: top;
-                            }
-                            .sc-table th {
-                            background: #f5f5f5;
-                            }
-                            .sc-sec {
-                            background: #eef3fb;
-                            font-weight: 600;
-                            }
-
-                            /* Checkboxes */
-                            .box {
-                            display: inline-block;
-                            width: 12px;
-                            height: 12px;
-                            border: 1px solid #888;
-                            text-align: center;
-                            line-height: 12px;
-                            font-size: 12px;
-                            border-radius: 2px;
-                            }
-                            .yes { color: #0a6; }
-                            .no { color: #c33; }
-
-                            /* Muted text */
-                            .muted {
-                            color: #888;
-                            font-size: 12px;
-                            }
-
-                            /* Section row */
-                            .sc-section-row th {
-                            border-top: 2px solid #bcd;
-                            }
-                        </style>
-
                         <table style="border-collapse: separate; border-spacing:0; border:1px solid #000;
               border-radius:15px 50px 30px; background-color:#f5f5f5; display: table; margin: 10px auto;">
                             <tr>
@@ -180,8 +91,10 @@
                             <thead>
                                 <tr>
                                     <th style="width:60%">Symptom / العرض</th>
-                                    <th style="width:12%" class="text-center">Yes / نعم</th>
-                                    <th style="width:12%" class="text-center">No / لا</th>
+<!--                                    <th style="width:12%" class="text-center">Yes / نعم</th>-->
+<!--                                    <th style="width:12%" class="text-center">No / لا</th>-->
+
+                                    <th style="width:12%">Yes / No</th>
                                     <th style="width:16%">Notes / ملاحظات</th>
                                 </tr>
                             </thead>
@@ -207,17 +120,23 @@
                                                 </div>
                                             </td>
 
+<!--                                            <td class="text-center">-->
+<!--                                                <span t-attf-class="box #{'yes' if line.present else 'muted'}">-->
+<!--                                                    <t t-if="line.present">✓</t>-->
+<!--                                                </span>-->
+<!--                                            </td>-->
+
+<!--                                            <td class="text-center">-->
+<!--                                                <span t-attf-class="box #{'no' if line.absent else 'muted'}">-->
+<!--                                                    <t t-if="line.absent">✓</t>-->
+<!--                                                </span>-->
+<!--                                            </td>-->
                                             <td class="text-center">
-                                                <span class="box yes">
-                                                    <t t-if="line.present">✓</t>
+<span t-attf-class="box #{'yes' if line.attendance=='present' else 'no' if line.attendance=='absent' else 'muted'}">                                                    <t t-if="line.attendance=='present'">&#10003;</t>
+                                                    <t t-if="line.attendance=='absent'">&#10007;</t>
                                                 </span>
                                             </td>
 
-                                            <td class="text-center">
-                                                <span class="box no">
-                                                    <t t-if="line.absent">✓</t>
-                                                </span>
-                                            </td>
 
                                             <td>
                                                 <t t-esc="line.notes or ''"/>
@@ -353,94 +272,6 @@
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <style>
-                            /* Page settings */
-                            @page {
-                            size: A4;
-                            margin: 10mm;
-                            }
-
-                            /* Header and footer */
-                            .o_report_layout .header,
-                            .o_report_layout .o_header {
-                            padding: 4px 0 !important;
-                            margin-bottom: 6px !important;
-                            }
-                            .o_report_layout .footer,
-                            .o_report_layout .o_footer {
-                            padding: 4px 0 !important;
-                            margin-top: 6px !important;
-                            font-size: 12px;
-                            }
-
-                            /* Section title */
-                            .sc-title {
-                            font-size: 18px;
-                            font-weight: 700;
-                            margin: 0 0 6px 0;
-                            }
-
-                            /* Subtle text */
-                            .sc-subtle {
-                            color: #666;
-                            }
-
-                            /* Meta table */
-                            .sc-meta {
-                            width: 100%;
-                            margin: 6px 0;
-                            }
-                            .sc-meta td {
-                            padding: 2px 6px;
-                            font-size: 12px;
-                            }
-
-                            /* Symptom table */
-                            .sc-table {
-                            width: 100%;
-                            border-collapse: collapse;
-                            margin-top: 4px;
-                            }
-                            .sc-table th,
-                            .sc-table td {
-                            border: 1px solid #d9d9d9;
-                            padding: 5px 7px;
-                            font-size: 12px;
-                            vertical-align: top;
-                            }
-                            .sc-table th {
-                            background: #f5f5f5;
-                            }
-                            .sc-sec {
-                            background: #eef3fb;
-                            font-weight: 600;
-                            }
-
-                            /* Checkboxes */
-                            .box {
-                            display: inline-block;
-                            width: 12px;
-                            height: 12px;
-                            border: 1px solid #888;
-                            text-align: center;
-                            line-height: 12px;
-                            font-size: 12px;
-                            border-radius: 2px;
-                            }
-                            .yes { color: #0a6; }
-                            .no { color: #c33; }
-
-                            /* Muted text */
-                            .muted {
-                            color: #888;
-                            font-size: 12px;
-                            }
-
-                            /* Section row */
-                            .sc-section-row th {
-                            border-top: 2px solid #bcd;
-                            }
-                        </style>
                         <table style="border-collapse: separate; border-spacing:0; border:1px solid #000;
               border-radius:15px 50px 30px; background-color:#f5f5f5; display: table; margin: 10px auto;">
                             <tr>
