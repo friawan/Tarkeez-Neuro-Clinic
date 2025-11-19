@@ -13,3 +13,4 @@ access_patient_package_installment,patient.package.installment,model_patient_pac
 access_patient_session,patient.session,model_patient_session,base.group_user,1,1,1,1
 access_patient_package_wizard,patient.package.wizard,model_patient_package_wizard,base.group_user,1,1,1,1
 access_res_section,res.section,model_res_section,base.group_user,1,1,1,1
+access_appointment_type,appointment.type,model_appointment_type,base.group_user,1,1,1,1

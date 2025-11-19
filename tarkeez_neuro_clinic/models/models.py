@@ -26,6 +26,7 @@ class TarkeezAppointments(models.Model):
     employee_id = fields.Many2one('res.employee', ondelete='restrict', string='Employee')
     doctor_id = fields.Many2one('res.doctors', required=True, ondelete='restrict', string='Doctors')
     is_collect = fields.Boolean(string='Examination Fees')
+    appointment_type_id = fields.Many2one('appointment.type',string="Appointment Type")
 
     # invoice = fields.Many2one('dental.invoice', string='invoice')
     # services_id = fields.Many2one('res.services', string='Services', domain="[('is_show', '=', True)]")
@@ -37,6 +38,15 @@ class TarkeezAppointments(models.Model):
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code("tarkeez.appointments") or _('New')
         return super(TarkeezAppointments, self).create(vals_list)
+
+class AppointmentType(models.Model):
+    _name = "appointment.type"
+    _inherit = ['mail.thread']
+    _description = "Appointment Type"
+
+    name = fields.Char(string="Type Name", required=True)
+    color = fields.Integer(string="Color")
+    active = fields.Boolean(default=True)
 
 class TrakeezDoctors(models.Model):
     _name = "res.doctors"
@@ -66,6 +76,7 @@ class TrakeezPatients(models.Model):
     patient_age = fields.Integer(string="Age", compute="_compute_age", store=True)
     birthday = fields.Date(string='Birthday')
     gender = fields.Selection([('male', 'Male'), ('female', 'Female'), ], string='Gender')
+    handedness = fields.Selection([('left', 'Left'), ('right', 'Right'), ], string='Handedness')
     age_group = fields.Selection([('adult', 'Adult'), ('child', 'Child'), ], required=True, string='Age Group')
     code = fields.Char(readonly=True )
     date = fields.Datetime('Date', default=fields.Datetime.now)
@@ -74,7 +85,7 @@ class TrakeezPatients(models.Model):
     package_count = fields.Integer(compute="_compute_package_count")
     appointment_count = fields.Integer(string="Appointments",compute="_compute_appointment_count")
     diagnosis = fields.Char(string="Diagnosis")
-    qid = fields.Char(string="QID")
+    qid = fields.Char(string="ID")
     core_symptoms = fields.Text(string='Symptoms ')
     medications = fields.Text(string='Medications or Reports?')
 

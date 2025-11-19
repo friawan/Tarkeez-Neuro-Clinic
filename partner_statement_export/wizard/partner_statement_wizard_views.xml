@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_statement_wizard_form" model="ir.ui.view">
+        <field name="name">partner.statement.wizard.form</field>
+        <field name="model">partner.statement.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Partner Statement" create="0" edit="0">
+                <group>
+                    <field name="partner_id"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="output"/>
+                </group>
+                <footer>
+                    <button name="action_print" type="object" class="btn-primary" string="Print"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_partner_statement_wizard" model="ir.actions.act_window">
+        <field name="name">Partner Statement</field>
+        <field name="res_model">partner.statement.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{"default_partner_id": active_id}</field>
+    </record>
+
+    <!-- Button in Partner Form -->
+    <record id="view_partner_form_inherit_statement_button" model="ir.ui.view">
+        <field name="name">res.partner.form.statement.button</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button type="action" class="oe_stat_button" name="%(action_partner_statement_wizard)d"
+                        icon="fa-file-text-o" string="Statement"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

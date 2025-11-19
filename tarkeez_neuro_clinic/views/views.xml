@@ -14,6 +14,7 @@
                     <field name="doctor_id"/>
                     <field name="employee_id"/>
                     <field name="state"/>
+                    <field name="appointment_type_id"/>
                     <field name="is_collect" widget="boolean_toggle"/>
                 </list>
             </field>
@@ -41,8 +42,8 @@
                             <group>
                                 <field name="start_date"/>
                                 <field name="end_date"/>
-                                <field name="is_collect" widget="boolean_toggle"/>
-                                <!--                                <field name="invoice" options="{'no_create': True, 'no_open': True}"/>-->
+
+                                <field name="appointment_type_id" options="{'no_create': True, 'no_open': True}"/>
 
 
                             </group>
@@ -53,7 +54,6 @@
                                        options="{'no_create': True, 'no_open': True}"/>
                                 <field name="employee_id" widget="many2one_avatar_user"
                                        options="{'no_create': True, 'no_open': True}"/>
-                                <!--                                <field name="services_id" options="{'no_create': True, 'no_open': True}"/>-->
                             </group>
                         </group>
                     </sheet>
@@ -88,6 +88,46 @@
             <field name="res_model">res.appointments</field>
             <field name="view_mode">calendar,list,form</field>
         </record>
+
+
+        <!--_______________________________appointments type____________________________________-->
+
+        <record id="view_appointment_type_tree" model="ir.ui.view">
+            <field name="name">appointment.type.tree</field>
+            <field name="model">appointment.type</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="color" widget="color_picker"/>
+                </list>
+            </field>
+        </record>
+        <record id="view_appointment_type_form" model="ir.ui.view">
+            <field name="name">appointment.type.form</field>
+            <field name="model">appointment.type</field>
+            <field name="arch" type="xml">
+                <form string="Appointment Type">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                            <group>
+                                <field name="color" widget="color_picker"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+        <record id="action_appointment_type" model="ir.actions.act_window">
+            <field name="name">Appointment Types</field>
+            <field name="res_model">appointment.type</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+
         <!--__________________________doctors___________________________________________-->
 
         <record model="ir.ui.view" id="doctors_list">
@@ -356,20 +396,19 @@
                             </h1>
                             <h3>
                                 <field name="code" invisible="1"/>
-
-
                             </h3>
-
                         </div>
-
                         <group>
                             <group>
                                 <field name="code"/>
+                                <field name="qid"/>
                                 <field name="city" placeholder="City" class="o_address_city" readonly=""/>
                                 <field name="gender"/>
                                 <field name="birthday"/>
                                 <field name="patient_age"/>
                                 <field name="age_group"/>
+                                <field name="handedness"/>
+
                             </group>
                             <group>
                                 <field name="date"/>
@@ -439,7 +478,6 @@
 
                                     </group>
                                     <group>
-                                        <field name="qid"/>
 
                                     </group>
                                 </group>
@@ -928,7 +966,7 @@
             </field>
         </record>
         <record model="ir.ui.view" id="symptom_group_list">
-           <field name="name">Symptom Group</field>
+            <field name="name">Symptom Group</field>
             <field name="model">res.section</field>
             <field name="arch" type="xml">
                 <list string="Symptom" sample="1" multi_edit="1">
@@ -1047,6 +1085,12 @@
                   name="Manage Symptom "
                   parent="tarkeez_neuro_clinic.menu_root"
                   sequence="10"/>
+
+        <menuitem id="menu_res_app_type"
+                  name="Appointment Type "
+                  parent="tarkeez_neuro_clinic.menu_root"
+                  action="tarkeez_neuro_clinic.action_appointment_type"/>
+        sequence="12"/>
 
 
         <menuitem name="Symptom Chicklist"

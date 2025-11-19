@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <report id="report_partner_statement_pdf"
+            model="partner.statement.wizard"
+            string="Partner Statement"
+            report_type="qweb-pdf"
+            name="partner_statement_export.statement_pdf"
+            file="partner_statement_export.statement_pdf"
+            print_report_name="'Statement - %s' % (object.partner_id.display_name)"/>
+
+    <template id="statement_pdf">
+        <t t-call="web.html_container">
+            <t t-set="wizard" t-value="doc or (docs and docs[0])"/>
+            <t t-set="o" t-value="wizard"/>
+            <t t-call="web.external_layout">
+                <t t-set="opening" t-value="opening"/>
+                <t t-set="lines" t-value="lines"/>
+                <t t-set="closing" t-value="closing"/>
+                <t t-set="total_debit" t-value="total_debit"/>
+                <t t-set="total_credit" t-value="total_credit"/>
+                <div class="page">
+                    <h2 class="mb16">Partner Statement</h2>
+                    <div class="row mb16">
+                        <div class="col-6">
+                            <div><strong>Partner:</strong> <t t-esc="wizard.partner_id.display_name"/></div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-end"><strong>Period:</strong> <t t-esc="wizard.date_from"/> - <t t-esc="wizard.date_to"/></div>
+                            <div class="text-end"><strong>Opening Balance:</strong> <t t-esc="'%.2f' % opening"/></div>
+                            <div class="text-end"><strong>Closing Balance:</strong> <t t-esc="'%.2f' % closing"/></div>
+                        </div>
+                    </div>
+                    <style>
+                        .ps-table th, .ps-table td { border: 1px solid #ddd; }
+                        .ps-table { border-collapse: collapse; width: 100%; }
+                        .ps-table thead th { background: #f5f5f5; }
+                        .ps-table tbody tr:nth-child(even) { background: #fafafa; }
+                        .text-end { text-align: right; }
+                    </style>
+                    <table class="ps-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Move</th>
+                                <th>Journal</th>
+                                <th>Reference</th>
+                                <th>Policy</th>
+                                <th>Debit Note</th>
+                                <th>Credit Note</th>
+                                <th class="text-end">Debit</th>
+                                <th class="text-end">Credit</th>
+                                <th class="text-end">Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="lines" t-as="l">
+                                <td><t t-esc="l['date']"/></td>
+                                <td><t t-esc="l['move']"/></td>
+                                <td><t t-esc="l['journal']"/></td>
+                                <td><t t-esc="l['reference']"/></td>
+                                <td><t t-esc="l['policy']"/></td>
+                                <td><t t-esc="l['debit_note']"/></td>
+                                <td><t t-esc="l['credit_note']"/></td>
+                                <td class="text-end"><t t-esc="'%.2f' % l['debit']"/></td>
+                                <td class="text-end"><t t-esc="'%.2f' % l['credit']"/></td>
+                                <td class="text-end"><t t-esc="'%.2f' % l['balance']"/></td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="7" class="text-end">Totals</th>
+                                <th class="text-end"><t t-esc="'%.2f' % total_debit"/></th>
+                                <th class="text-end"><t t-esc="'%.2f' % total_credit"/></th>
+                                <th class="text-end"><t t-esc="'%.2f' % closing"/></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <report id="report_partner_statement_xlsx"
+            model="partner.statement.wizard"
+            string="Partner Statement (XLSX)"
+            report_type="xlsx"
+            name="partner_statement_export.statement_xlsx"
+            file="partner_statement_export.statement_xlsx"
+            print_report_name="'Statement - %s' % (object.partner_id.display_name)"/>
+</odoo>
