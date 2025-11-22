@@ -13,7 +13,11 @@
                     <field name="patient_id"/>
                     <field name="doctor_id"/>
                     <field name="employee_id"/>
-                    <field name="state"/>
+                    <field name="state" widget="badge"
+                           decoration-info="state == 'draft'"
+                           decoration-success="state == 'done'"
+                           decoration-danger="state == 'cancel'"
+                           decoration-warning="state == 'in_clinic'"/>
                     <field name="appointment_type_id"/>
                     <field name="is_collect" widget="boolean_toggle"/>
                 </list>
@@ -25,11 +29,23 @@
             <field name="arch" type="xml">
                 <form string="appointments">
                     <header>
-                        <field name="state" readonly="0" widget="statusbar" statusbar_visible="draft,in_clinic,done"
+                        <field name="state" readonly="0" widget="statusbar"
+                               statusbar_visible="draft,in_clinic,done,cancel"
                                options="{'clickable': '1'}"
-                               colors='{"draft": "warning", "in_clinic":"danger" , "done": "success"}'/>
+                               decoration-info="state == 'draft'"
+                               decoration-success="state == 'done'"
+                               decoration-danger="state == 'cancel'"
+                               decoration-warning="state == 'in_clinic'"/>
+
                     </header>
                     <sheet>
+                        <div class="w-100 row">
+                            <field name="active" widget="boolean_toggle" invisible="1"/>
+
+                            <widget name="web_ribbon" title="Canceled" bg_color="text-bg-danger"
+                                    invisible="active"/>
+
+                        </div>
                         <div class="oe_title mb24">
                             <h1>
                                 <field id="company" options="{'line_breaks': False}" widget="text" class="text-break"
@@ -71,11 +87,12 @@
                           date_start="start_date"
                           date_stop="end_date"
                           event_open_popup="true"
-                          color="patient_id">
+                          color="state">
 
                     <field name="name"/>
                     <field name="start_date"/>
                     <field name="end_date"/>
+                    <field name="state"/>
                     <field name="patient_id" avatar_field="avatar_128"/>
                     <field name="doctor_id" avatar_field="avatar_128"/>
                     <field name="employee_id"/>

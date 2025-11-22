@@ -17,9 +17,9 @@ class TarkeezAppointments(models.Model):
         ('draft', 'Draft'),
         ('in_clinic', 'In Clinic'),
         ('cancel', 'Cancelled'),
-        ('done', 'Done'), ],
+        ('done', 'Done'), ('cancel', 'Cancel'), ],
         string='Status', required=True, readonly=True, copy=False, tracking=True, default='draft')
-    name = fields.Char(readonly=True, )
+    name = fields.Char(readonly=True, default=lambda self: "New Appointment" )
     start_date = fields.Datetime('Start Date', required=True)
     end_date = fields.Datetime('End Date', required=True)
     patient_id = fields.Many2one('res.patients', required=True, ondelete='restrict', string='Patients')
@@ -27,6 +27,15 @@ class TarkeezAppointments(models.Model):
     doctor_id = fields.Many2one('res.doctors', required=True, ondelete='restrict', string='Doctors')
     is_collect = fields.Boolean(string='Examination Fees')
     appointment_type_id = fields.Many2one('appointment.type',string="Appointment Type")
+    active = fields.Boolean(default=True)
+
+    @api.onchange('state')
+    def _onchange_state(self):
+        if self.state == 'cancel':
+            self.active = False
+        else:
+            self.active = True
+
 
     # invoice = fields.Many2one('dental.invoice', string='invoice')
     # services_id = fields.Many2one('res.services', string='Services', domain="[('is_show', '=', True)]")
